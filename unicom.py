@@ -235,27 +235,27 @@ def other(data):
 
 def zuheFeature(data_source):
     data = data_source.copy()
-	
-	data['fee_min'] = data.loc[:, '1_total_fee':'4_total_fee'].min(axis=1)
+    
+    data['fee_min'] = data.loc[:, '1_total_fee':'4_total_fee'].min(axis=1)
     data['fee_max'] = data.loc[:, '1_total_fee':'4_total_fee'].max(axis=1)
-	data['last_month_traffic_rest'] = data['month_traffic'] - data['last_month_traffic']
-	data['pay_num_pertime'] = data['pay_num'] / data['pay_times']
-	
-	data['range'] = data['fee_max'] - data['fee_min']
+    data['last_month_traffic_rest'] = data['month_traffic'] - data['last_month_traffic']
+    data['pay_num_pertime'] = data['pay_num'] / data['pay_times']
+    
+    data['range'] = data['fee_max'] - data['fee_min']
     data['range_fee1'] = data['1_total_fee'] / data['range']
     data['range_fee2'] = data['2_total_fee'] / data['range']
     data['range_fee3'] = data['3_total_fee'] / data['range']
     data['range_fee4'] = data['4_total_fee'] / data['range']
-	
-	data['online_fee'] = data['online_time'] * data['fee_min']
+    
+    data['online_fee'] = data['online_time'] * data['fee_min']
 
     data['ratio_service2_online'] = data['service2_caller_time'] / data['online_time']
 
     data['ratio_month_online'] = data['month_traffic'] / data['online_time']
 
-	
-	
-	tmp = []
+    
+    
+    tmp = []
     for i in tqdm(range(len(data))):
         if (data['month_traffic'][i] - (data['last_month_traffic'][i] + data['local_trafffic_month'][i])) < 0:
             tmp.append(data['1_total_fee'][i] - (data['service1_caller_time'][i] * 0.15))
@@ -267,27 +267,27 @@ def zuheFeature(data_source):
             data['month_traffic'][i] - (
             data['last_month_traffic'][i] + data['local_trafffic_month'][i]) - 200) * 60 / 1024))
     data['base_fee'] = tmp
-	
-	
-	isint_feature=['1_total_fee','2_total_fee','3_total_fee','4_total_fee','month_traffic','pay_num','last_month_traffic','local_trafffic_month','local_caller_time',
+    
+    
+    isint_feature=['1_total_fee','2_total_fee','3_total_fee','4_total_fee','month_traffic','pay_num','last_month_traffic','local_trafffic_month','local_caller_time',
               'service1_caller_time','service2_caller_time']
-	for col in isint_feature:
-		data[col+'xx']=data[col].apply(get_str4)
-		data[col+'x1']=data[col+'xx'].map(lambda x:x[0])
-		data[col+'x1']=data[col+'x1'].astype(int)
-		data[col+'x2']=data[col+'xx'].map(lambda x:x[1])
-		data[col+'x2']=data[col+'x2'].astype(int)
-		data[col+'x3']=data[col+'xx'].map(lambda x:x[2])
-		data[col+'x3']=data[col+'x3'].replace('e',0)
-		data[col+'x3']=data[col+'x3'].astype(int)
-		data[col+'x4']=data[col+'xx'].map(lambda x:x[3])
-		data[col+'x4']=data[col+'x4'].replace('-',0)
-		data[col+'x4']=data[col+'x4'].astype(int)
-		data.pop(col+'xx')
-	
-	
-	
-	
+    for col in isint_feature:
+        data[col+'xx']=data[col].apply(get_str4)
+        data[col+'x1']=data[col+'xx'].map(lambda x:x[0])
+        data[col+'x1']=data[col+'x1'].astype(int)
+        data[col+'x2']=data[col+'xx'].map(lambda x:x[1])
+        data[col+'x2']=data[col+'x2'].astype(int)
+        data[col+'x3']=data[col+'xx'].map(lambda x:x[2])
+        data[col+'x3']=data[col+'x3'].replace('e',0)
+        data[col+'x3']=data[col+'x3'].astype(int)
+        data[col+'x4']=data[col+'xx'].map(lambda x:x[3])
+        data[col+'x4']=data[col+'x4'].replace('-',0)
+        data[col+'x4']=data[col+'x4'].astype(int)
+        data.pop(col+'xx')
+    
+    
+    
+    
     # add 20:53pm 2018-11-10
     # *******************************************************
     data['1decimal'] = data['1_total_fee'].apply(dec)
@@ -295,8 +295,8 @@ def zuheFeature(data_source):
     data['1decimal2'] = data['1_total_fee'].apply(dec2)
     data['1decimal3'] = data['1_total_fee'].apply(dec3)
     data['1decimal4'] = data['1_total_fee'].apply(dec4)
-	
-	data['mindecimal2'] = data['fee_min'].apply(dec2)
+    
+    data['mindecimal2'] = data['fee_min'].apply(dec2)
     data['mindecimal4'] = data['fee_min'].apply(dec4)
 
     data['lmtdecimal5'] = data['last_month_traffic'].apply(dec5)
@@ -305,22 +305,22 @@ def zuheFeature(data_source):
 
     data['1calldecimal3'] = data['service1_caller_time'].apply(dec3)
     data['2calldecimal4'] = data['service2_caller_time'].apply(dec4)
-	
-	
-	for i in tqdm(list(range(1,5))):
-		data[str(i)+'_total_fee_max'] = data[str(i)+'_total_fee']/data[str(i)+'_total_fee'].max()
-		data[str(i)+'_total_fee_min'] = data[str(i)+'_total_fee']/data[str(i)+'_total_fee'].min()
-		data[str(i)+'_total_fee_median'] = data[str(i)+'_total_fee']/data[str(i)+'_total_fee'].median()
-		data[str(i)+'_total_fee_mean'] = data[str(i)+'_total_fee']/data[str(i)+'_total_fee'].mean()
     
-	
-	LT_count=['1_total_fee','2_total_fee','3_total_fee','4_total_fee','online_time','age','last_month_traffic_rest','pay_num']
-	for col in LT_count:
-		lt=data.groupby(col).size().reset_index()
-		lt.columns=[col,col+'_count']
-		data=pd.merge(data,lt,on=col,how='left')
-		
-		
+    
+    for i in tqdm(list(range(1,5))):
+        data[str(i)+'_total_fee_max'] = data[str(i)+'_total_fee']/data[str(i)+'_total_fee'].max()
+        data[str(i)+'_total_fee_min'] = data[str(i)+'_total_fee']/data[str(i)+'_total_fee'].min()
+        data[str(i)+'_total_fee_median'] = data[str(i)+'_total_fee']/data[str(i)+'_total_fee'].median()
+        data[str(i)+'_total_fee_mean'] = data[str(i)+'_total_fee']/data[str(i)+'_total_fee'].mean()
+    
+    
+    LT_count=['1_total_fee','2_total_fee','3_total_fee','4_total_fee','online_time','age','last_month_traffic_rest','pay_num']
+    for col in LT_count:
+        lt=data.groupby(col).size().reset_index()
+        lt.columns=[col,col+'_count']
+        data=pd.merge(data,lt,on=col,how='left')
+        
+        
     # data['fee_mean'] = data.loc[:, '1_total_fee':'4_total_fee'].mean(axis=1)
 
     # data['mean_fee_1'] = (data['1_total_fee'] - data['fee_mean']).abs()
@@ -345,12 +345,12 @@ def zuheFeature(data_source):
     data['rate_diff_4_fee_up'] = data['4_total_fee'].apply(Rate_diff_1_fee_up)
 
     data['rate_diff_4_fee_down'] = data['4_total_fee'].apply(Rate_diff_1_fee_down)
-	
-	data["Rate_diff_online_up"] = data["online_time"].map(Rate_diff_online_up)
-	
+    
+    data["Rate_diff_online_up"] = data["online_time"].map(Rate_diff_online_up)
+    
     data["Rate_diff_online_down"] = data["online_time"].map(Rate_diff_online_down)
-	
-	#data['rate_diff_local_traffic_up']=data['local_trafffic_month'].apply(Rate_diff_1_traffic_up)
+    
+    #data['rate_diff_local_traffic_up']=data['local_trafffic_month'].apply(Rate_diff_1_traffic_up)
     
     #data['rate_diff_local_traffic_down']=data['local_trafffic_month'].apply(Rate_diff_1_traffic_down)
     
