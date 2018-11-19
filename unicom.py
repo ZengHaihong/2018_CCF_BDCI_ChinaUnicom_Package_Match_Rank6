@@ -272,7 +272,7 @@ def zuheFeature(data_source):
     isint_feature=['1_total_fee','2_total_fee','3_total_fee','4_total_fee','month_traffic','pay_num','last_month_traffic','local_trafffic_month','local_caller_time',
               'service1_caller_time','service2_caller_time']
     for col in isint_feature:
-        data[col+'xx']=data[col].apply(get_str4)
+        #data[col+'xx']=data[col].apply(get_str4)
         data[col+'x1']=data[col+'xx'].map(lambda x:x[0])
         data[col+'x1']=data[col+'x1'].astype(int)
         data[col+'x2']=data[col+'xx'].map(lambda x:x[1])
