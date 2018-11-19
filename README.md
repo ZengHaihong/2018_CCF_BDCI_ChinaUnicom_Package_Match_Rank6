@@ -1,0 +1,2 @@
+# 2018_CCF_BDCI_ChinaUnicom_Package_Match
+联通研究院-面向电信行业存量用户的智能套餐个性化匹配模型
