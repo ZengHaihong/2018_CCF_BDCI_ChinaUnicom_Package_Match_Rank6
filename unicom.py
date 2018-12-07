@@ -175,6 +175,21 @@ def Rate_diff_online_down(online):
         return (online - 136) / 136
 
 
+def get_str4(s):
+    zz=str(s).split('.')
+    if len(zz)==1:
+        return [zz[0],'0','0','0']
+    if len(zz)==2:
+        if len(str(zz[1]))<3:
+            try:
+                return [zz[0],zz[1][0],zz[1][1],'0']
+            except:
+                return [zz[0],zz[1][0],'0','0']
+        else:
+            return [zz[0],zz[1][0],zz[1][1],zz[1][2]]
+
+
+
 def other(data):
     data['gender'] = data['gender'].apply(lambda x: -1 if x == r'\N' or x == r'\\N'  else x)
     data['1_total_fee'] = data['1_total_fee'].apply(lambda x: -1 if x == r'\N' or x == r'\\N'  else x)
@@ -272,7 +287,7 @@ def zuheFeature(data_source):
     isint_feature=['1_total_fee','2_total_fee','3_total_fee','4_total_fee','month_traffic','pay_num','last_month_traffic','local_trafffic_month','local_caller_time',
               'service1_caller_time','service2_caller_time']
     for col in isint_feature:
-        #data[col+'xx']=data[col].apply(get_str4)
+        data[col+'xx']=data[col].apply(get_str4)
         data[col+'x1']=data[col+'xx'].map(lambda x:x[0])
         data[col+'x1']=data[col+'x1'].astype(int)
         data[col+'x2']=data[col+'xx'].map(lambda x:x[1])
